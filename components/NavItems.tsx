@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation"
 					 key={label}
 					  className={cn(pathname===href && 'text-primary 	 font-semibold')}
 					>
-						{label}
+						{label}	
 					</Link>	
 				))}
 			</nav>
