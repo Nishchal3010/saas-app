@@ -1,19 +1,11 @@
-"use client"
 // @ts-nocheck
-
-
+"use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { redirect } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -24,107 +16,248 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { createCompanion } from "@/lib/actions/companion.actions"
 
 const formSchema = z.object({
   name:     z.string().min(2, { message: "Companion name is required." }),
-  subject:  z.string().min(2, { message: "Subject is required." }),
+  subject:  z.string().min(1, { message: "Subject is required." }),
   topic:    z.string().min(2, { message: "Topic is required." }),
+  voice:    z.string().min(1, { message: "Voice is required." }),
+  style:    z.string().min(1, { message: "Style is required." }),
   duration: z.coerce.number().min(1, { message: "Duration is required." }),
 })
+
+const subjects = [
+  "Maths",
+  "Science",
+  "English",
+  "History",
+  "Geography",
+  "Coding",
+  "Language",
+]
+
+const voices = [
+  "Male",
+  "Female",
+]
+
+const styles = [
+  "Formal",
+  "Casual",
+  "Friendly",
+  "Professional",
+]
 
 const CompanionForm = () => {
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      subject: "",
-      topic: "",
-      duration: 30,
+      name:     "",
+      subject:  "",
+      topic:    "",
+      voice:    "",
+      style:    "",
+      duration: 15,
     },
   })
 
-  const onSubmit = (values) => {
-    console.log(values)
+  const onSubmit = async (values) => {
+    const companion = await createCompanion(values)
+    if (companion) {
+      redirect(`/companions/${companion.id}`)
+    } else {
+      console.log("Failed to create companion")
+      redirect('/')
+    }
   }
 
   return (
-    <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle>Create Companion</CardTitle>
-        <CardDescription>
-          Fill in the details to create your companion.
-        </CardDescription>
-      </CardHeader>
+    <div className="max-w-2xl mx-auto px-4 py-10">
+      <h1 className="text-3xl font-bold mb-8">Companion Builder</h1>
 
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Companion Name</FormLabel>
+          {/* Companion Name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">
+                  Companion name
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Next.js Companion"
+                    className="h-12 rounded-lg border border-gray-300"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Subject */}
+          <FormField
+            control={form.control}
+            name="subject"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">
+                  Subject
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <Input placeholder="Enter companion name" {...field} />
+                    <SelectTrigger className="h-12 rounded-lg border border-gray-300">
+                      <SelectValue placeholder="Select the subject" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  <SelectContent>
+                    {subjects.map((subject) => (
+                      <SelectItem key={subject} value={subject}>
+                        {subject}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="subject"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Subject</FormLabel>
+          {/* Topic */}
+          <FormField
+            control={form.control}
+            name="topic"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">
+                  What should the companion help with?
+                </FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Ex. Derivatives & Integrals"
+                    className="rounded-lg border border-gray-300 min-h-[100px]"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Voice */}
+          <FormField
+            control={form.control}
+            name="voice"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">
+                  Voice
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <Input placeholder="Enter subject" {...field} />
+                    <SelectTrigger className="h-12 rounded-lg border border-gray-300">
+                      <SelectValue placeholder="Select the voice" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> 
+                  <SelectContent>
+                    {voices.map((voice) => (
+                      <SelectItem key={voice} value={voice}>
+                        {voice}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="topic"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Topic</FormLabel>
+          {/* Style */}
+          <FormField
+            control={form.control}
+            name="style"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">
+                  Style
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <Textarea placeholder="Enter topic" {...field} />
+                    <SelectTrigger className="h-12 rounded-lg border border-gray-300">
+                      <SelectValue placeholder="Select the style" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  <SelectContent>
+                    {styles.map((style) => (
+                      <SelectItem key={style} value={style}>
+                        {style}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration (minutes)</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Enter duration" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          {/* Duration */}
+          <FormField
+            control={form.control}
+            name="duration"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">
+                  Estimated session duration in minutes
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="15"
+                    className="h-12 rounded-lg border border-gray-300"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <Button type="submit" className="w-full">
-              Create Companion
-            </Button>
+          {/* Submit */}
+          <Button
+            type="submit"
+            className="w-full h-12 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg text-base"
+          >
+            Build Your Companion
+          </Button>
 
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+        </form>
+      </Form>
+    </div>
   )
 }
 
