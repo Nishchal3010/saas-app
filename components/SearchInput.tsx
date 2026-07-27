@@ -10,7 +10,7 @@ const SearchInput = () => {
   const searchParams = useSearchParams();
   const query = searchParams.get("topic") || "";
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(query);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -26,7 +26,8 @@ const SearchInput = () => {
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery, router, pathname, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   return (
     <div className="relative border border-black rounded-lg items-center flex gap-2 px-2 py-1 h-fit">
