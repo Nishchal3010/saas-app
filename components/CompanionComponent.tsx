@@ -36,7 +36,9 @@ const CompanionComponent = ({
   style,
 }: CompanionComponentProps) => {
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
+
   const [isSpeaking, setIsSpeaking] = useState(false);
+	
   const [isMuted, setIsMuted] = useState(false);
 
 	const lottieRef = useRef<LottieRefCurrentProps>(null);
@@ -76,6 +78,19 @@ const CompanionComponent = ({
       vapi.off("speech-end", onSpeechEnd);
     };
   }, []);
+
+	const toggleMicrophone = () => {
+		const isMuted = vapi.isMuted(); 
+		vapi.setMuted(!isMuted);
+	}
+
+const handleCall = async () => {
+
+}
+
+const handleDisconnect = async () => {
+	 
+}
 
   return (
     <section className="flex flex-col h-[70vh]">
@@ -122,10 +137,32 @@ const CompanionComponent = ({
       alt={userName}
       width={130}
       height={130}
-      className="rounded-lg"
-    />
-  </div>
-</div>
+      className="rounded-lg"/>
+			<p className="font-bold text-2xl">{userName}</p>
+    
+     </div>
+	   <button className="btn-mic" onClick={toggleMicrophone}>
+        <Image src={isMuted ? '/icons/mic-off.svg' : '/icons/mic-on.svg'} alt="mic" width={36} height={36} />
+				<p className="max-sm:hidden">
+					{isMuted ? 'Turn on microphone' : 'Turn off microphone'}
+
+				</p>
+	   </button>
+		<button
+  className={cn(
+    "rounded-lg py-2 cursor-pointer transition-colors w-full text-white",
+    callStatus === CallStatus.ACTIVE ? "bg-red-700" : "bg-primary",
+    callStatus === CallStatus.CONNECTING && "animate-pulse")} onClick={callStatus === CallStatus.ACTIVE ? handleDisconnect : handleCall}>
+  
+
+  {callStatus === CallStatus.ACTIVE
+    ? "End Session"
+    : callStatus === CallStatus.CONNECTING
+      ? "Connecting"
+      : "Start Session"}
+</button>
+
+   </div>
       </section>
     </section>
   );
