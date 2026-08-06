@@ -90,7 +90,7 @@ const CompanionForm = () => {
           className="space-y-6"
         >
 
-          {/* Companion Name */}
+          
           <FormField
             control={form.control}
             name="name"
@@ -149,7 +149,7 @@ const CompanionForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium">
-                  What should the companion help with?
+                
                 </FormLabel>
                 <FormControl>
                   <Textarea
@@ -163,7 +163,7 @@ const CompanionForm = () => {
             )}
           />
 
-          {/* Voice */}
+          
           <FormField
             control={form.control}
             name="voice"
