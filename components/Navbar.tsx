@@ -9,12 +9,14 @@ import {
 const Navbar = () => {
   return (
     <nav className="navbar">
-      <Link href="/">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.svg" alt="logo" width={46} height={44} />
-          <p className="text-xl font-semibold">Converso</p>
-        </div>
-      </Link>
+  <Link href="/">
+    <div className="flex items-center gap-2">
+      <Image src="/images/logo.svg" alt="logo" width={46} height={44} />
+      <p className="text-xl font-semibold">Converso</p>
+    </div>
+  </Link>
+
+      
 
       <div className="flex items-center gap-4">
         <Link href="/">Home</Link>

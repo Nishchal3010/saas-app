@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getSubjectColor = (subject: string) => {
-  return subjectsColors[subject as keyof typeof subjectsColors] || "#EFEFEF";
+  return subjectsColors[subject.toLowerCase() as keyof typeof subjectsColors] || "#EFEFEF";
 };
 
 
