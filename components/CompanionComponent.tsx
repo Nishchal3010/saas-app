@@ -50,7 +50,11 @@ const CompanionComponent = ({
   useEffect(() => {
     const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
 
-    const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
+    const onCallEnd = () =>{
+		
+			 setCallStatus(CallStatus.FINISHED);
+			 // addToSessionHistory(companionId);
+		}
 
     const onMessage = (message: any) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
